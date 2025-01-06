@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>PAK File Search</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 16px;
+      }
+      #gamecontrols {
+        margin-bottom: 6px;
+      }
+      #modcontrols {
+        margin-bottom: 16px;
+      }
+      #pakTable {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      #pakTable th, #pakTable td {
+        border: 1px solid #ccc;
+        padding: 8px;
+      }
+      #pakTable th {
+        background-color: #f9f9f9;
+      }
+      .toggle-switch {
+        display: inline-block;
+        width: 34px;
+        height: 18px;
+        position: relative;
+      }
+      .toggle-switch input {
+        display: none;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background-color: #2196F3;
+      }
+      input:checked + .slider:before {
+        transform: translateX(16px);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gamecontrols">
+      <label for="directoryInput">Game Directory:</label>
+      <input type="text" id="directoryInput" size="50" />
+      <button id="reloadBtn">Select</button>
+    </div>
+    <div id="modcontrols">
+      <label for="modDirectoryInput">Mods Directory:</label>
+      <input type="text" id="modDirectoryInput" size="50" />
+      <button id="modDirectorySelectBtn">Select</button>
+    </div>
+    
+    <table id="pakTable">
+      <thead>
+        <tr>
+          <th>Filename</th>
+          <th>Toggle</th>
+        </tr>
+      </thead>
+      <tbody id="pakTableBody">
+      </tbody>
+    </table>
+
+    <script>
+      const directoryInput = document.getElementById('directoryInput');
+      const reloadBtn = document.getElementById('reloadBtn');
+      const pakTableBody = document.getElementById('pakTableBody');
+
+      // Default directory (change this to whatever folder you like)
+      directoryInput.value = "D:\\SteamLibrary\\steamapps\\common\\MarvelRivals\\MarvelGame\\Marvel\\Content\\Paks";
+      modDirectoryInput.value = "C:\\Users\\Sethu\\Documents\\Projects\\Gaming\\marvel rivals";
+
+      // Function to render rows in the table
+      function renderPakFiles(modPakFiles, gamePakFiles) {
+        pakTableBody.innerHTML = ''; // Clear existing rows
+
+        modPakFiles.forEach((file) => {
+          const row = document.createElement('tr');
+
+          // Filename cell
+          const fileCell = document.createElement('td');
+          fileCell.textContent = file;
+          row.appendChild(fileCell);
+
+          // Toggle switch cell
+          const toggleCell = document.createElement('td');
+          toggleCell.innerHTML = `
+            <label class="toggle-switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          `;
+          row.appendChild(toggleCell);
+          
+          const checkbox = toggleCell.querySelector('input[type="checkbox"]');
+
+          if (gamePakFiles.includes(file)) {
+            checkbox.checked = true;
+          }
+
+          pakTableBody.appendChild(row);
+        });
+      }
+
+      // Function to request .pak files from the main process
+      async function loadPakFiles() {
+        const dirPath = modDirectoryInput.value.trim();
+        if (!dirPath) return;
+        const gameDirPath = directoryInput.value.trim();
+        if (!gameDirPath) return;
+        try {
+          const modPakFiles = await window.electronAPI.listPakFiles(dirPath);
+          const gamePakFiles = await window.electronAPI.listPakFiles(gameDirPath);
+          renderPakFiles(modPakFiles, gamePakFiles);
+        } catch (error) {
+          console.error('Failed to load .pak files:', error);
+        }
+      }
+
+      // Attach event listeners
+      // Click event: open the folder selection dialog
+      reloadBtn.addEventListener('click', async () => {
+        const selectedDir = await window.electronAPI.selectDirectory(directoryInput.value.trim());
+        if (selectedDir) {
+          directoryInput.value = selectedDir;
+          loadPakFiles();
+        }
+      });
+
+      modDirectorySelectBtn.addEventListener('click', async () => {
+        const selectedDir = await window.electronAPI.selectDirectory(modDirectoryInput.value.trim());
+        if (selectedDir) {
+          modDirectoryInput.value = selectedDir;
+          loadPakFiles();
+        }
+      });
+
+      // Initial load on startup
+      window.addEventListener('DOMContentLoaded', () => {
+        loadPakFiles();
+      });
+    </script>
+  </body>
+</html>
