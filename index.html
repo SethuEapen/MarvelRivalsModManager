@@ -121,6 +121,16 @@
           
           const checkbox = toggleCell.querySelector('input[type="checkbox"]');
 
+          checkbox.addEventListener('change', async () => {
+            console.log(`File: ${file} has checkbox state: ${checkbox.checked}`);
+            const modDirPath = modDirectoryInput.value.trim();
+            if (!modDirPath) return;
+            const gameDirPath = directoryInput.value.trim();
+            if (!gameDirPath) return;
+            const gamePakFiles = await window.electronAPI.moveMod(file, checkbox.checked, modDirPath, gameDirPath);
+            
+          });
+
           if (gamePakFiles.includes(file)) {
             checkbox.checked = true;
           }

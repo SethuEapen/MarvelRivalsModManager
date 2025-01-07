@@ -6,5 +6,6 @@ const { contextBridge, ipcRenderer } = require('electron');
  */
 contextBridge.exposeInMainWorld('electronAPI', {
   listPakFiles: (dirPath) => ipcRenderer.invoke('list-pak-files', dirPath),
-  selectDirectory: (currPath) => ipcRenderer.invoke('select-directory', currPath)
+  selectDirectory: (currPath) => ipcRenderer.invoke('select-directory', currPath),
+  moveMod: (file, checked, modDirPath, gameDirPath) => ipcRenderer.invoke('move-mod', file, checked, modDirPath, gameDirPath)
 });
