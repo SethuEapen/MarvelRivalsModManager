@@ -14,6 +14,8 @@ function createWindow() {
     }
   });
 
+  win.removeMenu()
+
   win.loadFile('index.html');
 }
 
@@ -50,22 +52,15 @@ ipcMain.handle('select-directory', async (event, currPath) => {
 // Handle a request to open a "select folder" dialog and return the chosen path
 ipcMain.handle('move-mod', async (event, file, checked, modDirPath, gameDirPath) => {
   try {
-    // Example: the file is in a "mods" folder next to your Electron files
-    // If `file` is already an absolute path, skip the path.join(...) part.
     const sourcePath = path.join(modDirPath, file);
-
-    // Destination path where the mod should go in the game directory
     const destPath = path.join(gameDirPath, file);
 
     if (checked) {
       // Copy the file into the gameDirPath if `checked` is true
       await fs.promises.copyFile(sourcePath, destPath);
-      console.log(`Copied ${file} to ${gameDirPath}`);
     } else {
       // Delete the file from the game directory if `checked` is false
-      // If it doesn't exist, handle the error gracefully
       await fs.promises.unlink(destPath);
-      console.log(`Deleted ${file} from ${gameDirPath}`);
     }
 
     // Return some success result if you want

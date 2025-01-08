@@ -2,29 +2,76 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>PAK File Search</title>
+    <title>Marvel Rivals Mod Man</title>
     <style>
+      ::-webkit-scrollbar {
+        width: 8px; /* 1px wider than Lion. */
+        /* This is more usable for users trying to click it. */
+        background-color: rgba(255, 255, 255, 0);
+        -webkit-border-radius: 100px;
+      }
+      /* hover effect for both scrollbar area, and scrollbar 'thumb' */
+      ::-webkit-scrollbar:hover {
+        background-color: rgba(255, 255, 255, 0.09);
+      }
+      
+      /* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
+      ::-webkit-scrollbar-thumb:vertical {
+        /* This is the EXACT color of Mac OS scrollbars. 
+          Yes, I pulled out digital color meter */
+        background: rgba(255, 255, 255, 0.5);
+        -webkit-border-radius: 100px;
+      }
+      ::-webkit-scrollbar-thumb:vertical:active {
+        background: rgba(255, 255, 255, 0.61); /* Some darker color when you click it */
+        -webkit-border-radius: 100px;
+      }
+      /* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
+      ::-webkit-scrollbar-thumb:horizontal {
+        /* This is the EXACT color of Mac OS scrollbars. 
+          Yes, I pulled out digital color meter */
+        background: rgba(255, 255, 255, 0.5);
+        -webkit-border-radius: 100px;
+      }
+      ::-webkit-scrollbar-thumb:horizontal:active {
+        background: rgba(255, 255, 255, 0.61); /* Some darker color when you click it */
+        -webkit-border-radius: 100px;
+      }
+
       body {
         font-family: sans-serif;
         margin: 0;
         padding: 16px;
+        background-color: black;
+        background-image: url(background.jpg);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: center;
       }
       #gamecontrols {
         margin-bottom: 6px;
+        color: white;
+        font-weight: bold;
       }
       #modcontrols {
         margin-bottom: 16px;
+        color: white;
+        font-weight: bold;
       }
       #pakTable {
         border-collapse: collapse;
         width: 100%;
+        background-color: rgba(0,0,0,.7);
+        color: white;
+        /* background: transparent; */
       }
       #pakTable th, #pakTable td {
         border: 1px solid #ccc;
         padding: 8px;
       }
       #pakTable th {
-        background-color: #f9f9f9;
+        background-color: #b82828;
       }
       .toggle-switch {
         display: inline-block;
@@ -58,7 +105,7 @@
         border-radius: 50%;
       }
       input:checked + .slider {
-        background-color: #2196F3;
+        background-color: #b82828;
       }
       input:checked + .slider:before {
         transform: translateX(16px);
@@ -80,8 +127,7 @@
     <table id="pakTable">
       <thead>
         <tr>
-          <th>Filename</th>
-          <th>Toggle</th>
+          <th>Available Mods</th>
         </tr>
       </thead>
       <tbody id="pakTableBody">
@@ -104,22 +150,27 @@
         modPakFiles.forEach((file) => {
           const row = document.createElement('tr');
 
-          // Filename cell
-          const fileCell = document.createElement('td');
-          fileCell.textContent = file;
-          row.appendChild(fileCell);
+          // Adding cell
+          const singleCell = document.createElement('td');
 
-          // Toggle switch cell
-          const toggleCell = document.createElement('td');
-          toggleCell.innerHTML = `
-            <label class="toggle-switch">
-              <input type="checkbox" />
-              <span class="slider"></span>
-            </label>
+          singleCell.innerHTML = `
+            <div style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              width: 100%;
+            ">
+              <span>${file}</span>
+              <label class="toggle-switch">
+                <input type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
           `;
-          row.appendChild(toggleCell);
+
+          row.appendChild(singleCell);
           
-          const checkbox = toggleCell.querySelector('input[type="checkbox"]');
+          const checkbox = singleCell.querySelector('input[type="checkbox"]');
 
           checkbox.addEventListener('change', async () => {
             console.log(`File: ${file} has checkbox state: ${checkbox.checked}`);

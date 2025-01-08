@@ -1,16 +1,26 @@
 {
   "name": "marvelrivalsmodmanager",
+  "productName": "Marvel Rivals Mod Manager",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "electron-builder"
   },
   "keywords": [],
-  "author": "",
+  "author": "Sethu Eapen",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^33.2.1"
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "install": "^0.13.0"
+  },
+  "build": {
+    "appId": "com.SethusBuilds.MarvelRivalsModManger",
+    "win": {
+      "target": ["portable"]
+    }
   }
 }
