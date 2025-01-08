@@ -140,8 +140,19 @@
       const pakTableBody = document.getElementById('pakTableBody');
 
       // Default directory (change this to whatever folder you like)
-      directoryInput.value = "D:\\SteamLibrary\\steamapps\\common\\MarvelRivals\\MarvelGame\\Marvel\\Content\\Paks";
-      modDirectoryInput.value = "C:\\Users\\Sethu\\Documents\\Projects\\Gaming\\marvel rivals";
+      if (!localStorage.getItem("gameDir")) {
+        directoryInput.value = "C:\\SteamLibrary\\steamapps\\common\\MarvelRivals\\MarvelGame\\Marvel\\Content\\Paks";
+        localStorage.setItem("gameDir", directoryInput.value)
+      } else {
+        directoryInput.value = localStorage.getItem("gameDir")
+      }
+
+      if (!localStorage.getItem("modDir")) {
+        modDirectoryInput.value = "";
+        localStorage.setItem("modDir", modDirectoryInput.value)
+      } else {
+        modDirectoryInput.value = localStorage.getItem("modDir")
+      }
 
       // Function to render rows in the table
       function renderPakFiles(modPakFiles, gamePakFiles) {
@@ -211,6 +222,7 @@
         const selectedDir = await window.electronAPI.selectDirectory(directoryInput.value.trim());
         if (selectedDir) {
           directoryInput.value = selectedDir;
+          localStorage.setItem("gameDir", selectedDir)
           loadPakFiles();
         }
       });
@@ -219,6 +231,7 @@
         const selectedDir = await window.electronAPI.selectDirectory(modDirectoryInput.value.trim());
         if (selectedDir) {
           modDirectoryInput.value = selectedDir;
+          localStorage.setItem("modDir", selectedDir)
           loadPakFiles();
         }
       });

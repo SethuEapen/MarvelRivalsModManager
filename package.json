@@ -20,7 +20,12 @@
   "build": {
     "appId": "com.SethusBuilds.MarvelRivalsModManger",
     "win": {
-      "target": ["portable"]
+      "target": [
+        "portable"
+      ]
     }
+  },
+  "dependencies": {
+    "electron-store": "^10.0.0"
   }
 }
